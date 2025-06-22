@@ -22,9 +22,8 @@ import { AdBanner } from '@/components/ads/ad-banner';
 import { shortenSingleUrlIfEnabled } from '@/services/url-shortener-service';
 
 interface ProcessedSeason extends Omit<APISeasonDetail, 'episodes'> {
-  episodes: (APIEpisodeDetail & {
-    isFirestoreLink?: boolean;
-  })[];
+  processedEpisodes: ProcessedEpisode[];
+  shortenedSeasonPackLinks: { quality: string; url: string }[];
 }
 
 interface ProcessedEpisode extends Omit<APIEpisodeDetail, 'telegram'> {
@@ -208,18 +207,14 @@ export default async function TVShowDetailsPage({
     }
   }
 
-  if (!tvShowDetails.isFirestoreSource && tvShowDetails.telegram && tvShowDetails.telegram.length > 0) {
-    // ... existing code ...
-  }
-
   let processedSeasons: ProcessedSeason[] = [];
   if (!tvShowDetails.isFirestoreSource && tvShowDetails.seasons && tvShowDetails.seasons.length > 0) {
-    processedSeasons = await Promise.all(
+    processedSeasons = (await Promise.all(
       tvShowDetails.seasons
         .filter(season => season && typeof season.season_number === 'number')
         .sort((a, b) => (a.season_number || 0) - (b.season_number || 0))
         .map(async (season) => {
-          if (!season) return null; // Should not happen due to filter but good for type safety
+          if (!season) return null; 
 
           const uniqueSeasonQualities = getUniqueQualitiesForSeason(season);
           const shortenedSeasonPackLinks = await Promise.all(
@@ -230,7 +225,7 @@ export default async function TVShowDetailsPage({
             })
           );
 
-          const processedEpisodes = await Promise.all(
+          const processedEpisodes = (await Promise.all(
             (season.episodes || [])
               .filter(episode => episode && typeof episode.episode_number === 'number')
               .sort((a,b) => (a.episode_number || 0) - (b.episode_number || 0))
@@ -257,16 +252,16 @@ export default async function TVShowDetailsPage({
                 const { telegram, ...restOfEpisode } = episode;
                 return { ...restOfEpisode, shortenedDirectDownloadLinks };
               })
-          );
+          )).filter((e): e is Exclude<Awaited<ReturnType<typeof Promise.all<any>>[number]>, null> => !!e);
           
           const { episodes, ...restOfSeason } = season;
           return { 
             ...restOfSeason, 
             shortenedSeasonPackLinks, 
-            processedEpisodes: processedEpisodes.filter(Boolean) as ProcessedEpisode[]
+            processedEpisodes
           };
         })
-    ).then(results => results.filter(Boolean)) as ProcessedSeason[];
+    )).then(results => results.filter((s): s is Exclude<typeof s, null> => !!s));
   }
 
 
@@ -412,6 +407,7 @@ export default async function TVShowDetailsPage({
                                 <Link href={link.url} target="_blank" rel="noopener noreferrer">
                                   <Download className="w-4 h-4 mr-2" /> Download
                                 </Link>
+
                               </Button>
                             </div>
                           </div>
@@ -473,7 +469,7 @@ export default async function TVShowDetailsPage({
                                       const episodeImage = episode.thumbnail || episode.episode_backdrop || placeholderImage;
 
                                       let link480p: { url: string; size?: string } | null = null;
-                                      let link720p: { url: string; size?: string } | null = null;
+                                      let link720p: { url:string; size?: string } | null = null;
                                       const otherLinks: { quality: string; url: string; size?: string }[] = [];
 
                                       episode.shortenedDirectDownloadLinks.forEach(link => {
