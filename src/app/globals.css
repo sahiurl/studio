@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 180 33% 23%; /* #264d4d Dark grayish-teal */
+    --foreground: 0 0% 98%; /* Light text */
+
+    --card: 180 33% 28%; /* Slightly lighter than background */
+    --card-foreground: 0 0% 98%;
+
+    --popover: 180 33% 18%; /* Slightly darker than background for popovers */
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 180 100% 25%; /* #008080 Deep teal */
+    --primary-foreground: 0 0% 98%; /* Light text on primary */
+
+    --secondary: 180 50% 35%; /* A less saturated teal for secondary elements */
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 180 25% 30%; /* Muted teal for less important text or backgrounds */
+    --muted-foreground: 0 0% 70%; /* Lighter muted text */
+
+    --accent: 180 100% 50%; /* #00FFFF Cyan */
+    --accent-foreground: 180 100% 10%; /* Dark text on accent (e.g., dark teal or black) */
+
+    --destructive: 0 72% 51%; /* A standard destructive red */
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 180 20% 40%; /* Tealish border */
+    --input: 180 20% 30%; /* Tealish input background, slightly different from muted */
+    --ring: 180 100% 50%; /* Accent color for rings */
+
+    --radius: 0.5rem;
+
+    /* Chart colors can remain or be adjusted to fit the new theme */
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
+
+    /* Sidebar variables, adapt to new theme if sidebar is used extensively */
+    /* For now, align with main theme or make distinct if needed */
+    --sidebar-background: 180 33% 18%; /* Darker than main bg for contrast */
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 180 100% 35%; /* Brighter teal for sidebar primary elements */
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 180 100% 50%; /* Cyan accent */
+    --sidebar-accent-foreground: 180 100% 10%;
+    --sidebar-border: 180 20% 35%;
+    --sidebar-ring: 180 100% 50%;
+  }
+
+  /* Remove .dark specific overrides if we're enforcing a single theme this way */
+  /* Or, ensure .dark class sets these if you want to keep the toggle ability but default to dark */
+  .dark {
+    --background: 180 33% 23%;
+    --foreground: 0 0% 98%;
+    --card: 180 33% 28%;
+    --card-foreground: 0 0% 98%;
+    --popover: 180 33% 18%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 180 100% 25%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 180 50% 35%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 180 25% 30%;
+    --muted-foreground: 0 0% 70%;
+    --accent: 180 100% 50%;
+    --accent-foreground: 180 100% 10%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 180 20% 40%;
+    --input: 180 20% 30%;
+    --ring: 180 100% 50%;
+
+    --sidebar-background: 180 33% 18%;
+    --sidebar-foreground: 0 0% 90%;
+    --sidebar-primary: 180 100% 35%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 180 100% 50%;
+    --sidebar-accent-foreground: 180 100% 10%;
+    --sidebar-border: 180 20% 35%;
+    --sidebar-ring: 180 100% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
